@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ 
+  <title>CoreIGR | Assign Plate Number</title>
+ {% include 'partials/css_head_links.html' %}
+
+</head>
+
+<body class="fixed-nav sticky-footer bg-dark" id="page-top">
+  <!-- Navigation-->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+    <a class="navbar-brand" href="index.html">CoreIGR</a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
+          <a class="nav-link" href="/">
+            <i class="fa fa-fw fa-dashboard"></i>
+            <span class="nav-link-text">Home</span>
+          </a>
+        </li>
+      
+        
+      </ul>
+     
+      <ul class="navbar-nav ml-auto">
+
+        <li class="nav-item">
+          <form class="form-inline my-2 my-lg-0 mr-lg-2">
+            <div class="input-group">
+              <input class="form-control" type="text" placeholder="Search for...">
+              <span class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+          </form>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" data-toggle="modal" data-target="#exampleModal">
+            <i class="fa fa-fw fa-sign-out"></i>Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <div class="content-wrapper">
+    <div class="container">
+      <!-- Breadcrumbs-->
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="#">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item active">Issue Plate number</li>
+      </ol>
+      <!-- Example DataTables Card-->
+
+      <div class="card">
+      <h5 class="card-header">Select Local Government area</h5>
+      <div class="card-body">
+
+
+          <form action="/store/get-lgov-numberplates/" method="POST"> 
+                {% csrf_token %}
+            <div class="form-group">
+
+                <div class="form-group row">
+                    <label for="category_name" class="col-sm-2 col-form-label">Office Name</label>
+                    <div class="col-sm-10">
+                       <input  name="office_name" readonly class="col lead text-left text-capitalize" value="{{office_name}}">
+                    </div>
+                </div>
+
+
+
+              </div>
+
+                 <div class="form-group row">
+                      <label for="lga" class="col-sm-2 col-form-label">Select Local Gov.</label>
+                      <div class="col-sm-10">
+
+                       
+                       <select class="form-control form-control-sm" name="lga">
+                          <option>Choose Local Government</option>
+
+                              {% if LGAs  %}
+                 
+                                    {% for LGA in LGAs %}
+                                     
+                                          <option > {{LGA.local_government_name}} </option>"
+                                    {% endfor %}
+                                  
+                                {% else %}
+                                    <strong> no  yet </strong>
+                                {% endif %}
+
+                        
+                      </select>
+                       
+                      </div>
+                    </div>
+
+                  <div class="form-group row"> 
+                    <div class="col-sm-2 offset-md-2">
+                        <input type="submit"  class="btn btn-primary" value="Submit">
+                    </div>
+                </div>
+
+          </form>
+      </div>
+
+</div>
+
+<!-- tabels -->
+  <div class="row">
+    <div class="col col-sm-6">
+      <div class="card mb-3 my-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i> Number Plates in local Gov {{lg}} </div>
+        <div class="card-body">
+
+          <div class="table-responsive"> 
+
+             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+             {% if number_plates %}
+
+                <tr> 
+                  <th>R. Date</th>
+                  <th>Number Plate</th>
+                  <th>Status</th>
+                 
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <th>R. Date</th>
+                  <th>Number Plate</th>
+                  <th>Status</th>
+                  
+                </tr>
+              </tfoot>
+  
+
+
+              <tbody>
+                {% for number_plate in number_plates %}
+                <tr> 
+                  <td>{{ number_plate.registration_date }}</td>
+                  <td>{{ number_plate.number_plate }}</td>
+
+                 
+                  <td>
+                     <a href="/store/issue-car-plate/{{number_plate.number_plate}}/" class="btn btn-primary">Issue</a> &nbsp;&nbsp;
+                   
+
+                  
+                  </td>
+                  
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% else %}
+                 <div class="alert alert-warning float-left"  role="alert">
+                     No Plate Numbers in this Government
+                </div>
+              {% endif %}
+              
+
+            </table>
+          </div>
+    </div>
+  </div>
+</div>
+  <div class="col col-sm-6">
+      <div class="card mb-3 my-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i>Assigned Number Plates in office {{office_name}}</div>
+        <div class="card-body">
+
+          <div class="table-responsive"> 
+
+             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+             {% if issued_number_plates %}
+
+                <tr> 
+                  <th>R. Date</th>
+                  <th>Number Plate</th>
+                  <th>Status</th>
+                 
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <th>R. Date</th>
+                  <th>Number Plate</th>
+                  <th>Status</th>
+                  
+                </tr>
+              </tfoot>
+  
+
+
+              <tbody>
+                {% for issued_number_plate in issued_number_plates %}
+                <tr> 
+                  <td>{{ issued_number_plate.registration_date }}</td>
+                  <td>{{ issued_number_plate.number_plate.number_plate }}</td>
+
+                 
+                  <td>
+                     <a href="/store/issue-car-plate/{{issued_number_plate.number_plate.number_plate}}/" class="btn btn-primary">Re issue</a> &nbsp;&nbsp;
+                   
+
+                  
+                  </td>
+                  
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% else %}
+                 <div class="alert alert-warning float-left"  role="alert">
+                     No Assigned Number Plates in this Office
+                </div>
+              {% endif %}
+              
+
+            </table>
+          </div>
+    </div>
+  </div>
+</div>
+</div>
+
+    <!-- Logout Modal-->
+
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+            <a class="btn btn-primary" href="login.html">Logout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+  
+
+  {% include 'partials/js_links.html' %}
+</body>
+
+
+</html>

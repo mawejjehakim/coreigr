@@ -1,0 +1,9 @@
+
+
+coreIGR/__pycache__
+coreIGR/__init__.py
+
+coreIGR_app/migrations
+coreIGR_app/__pycache__
+coreIGR_app/get_plate_info_mark_stolen.html
+coreIGR_app/__init__.py
