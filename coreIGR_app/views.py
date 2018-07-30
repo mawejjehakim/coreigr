@@ -4,7 +4,7 @@ from django.contrib import messages
 from coreIGR_app.controllers.tin import save_new_individual, i_data_preview, c_data_preview, save_new_company
 from django.http import HttpResponseRedirect
 from coreIGR_app.models import User, Office, LocalGovArea, StateCode, Charge, Company, Individual, InstitutionType, InstitutionCategory, Vehicle, NumberPlate, MDA, AssignedTin, AssignedNumberPlate
-from coreIGR_app.controllers.mla  import get_tin_information, v_data_preview, get_tin_information_ch_ownership, get_plate_information_mark_stolen, get_learners_permit, vehicle_revalidation
+from coreIGR_app.controllers.mla  import get_tin_information, v_data_preview, add_new_vehicle, get_tin_information_ch_ownership, get_plate_information_mark_stolen, get_learners_permit, vehicle_revalidation
 from coreIGR_app.controllers.store import p_n_data_preview, save_new_plate_number, get_localgov_numberplates
 from coreIGR_app.controllers.mda import add_new_mda
 	 
@@ -183,6 +183,9 @@ def save_state_code(req):
 	else:
 		messages.info(req, "sign in")		 
 		return render(req, 'login.html')
+
+
+
 
 def search_record(req):
 
@@ -683,6 +686,32 @@ def v_data_preview_before_saving(req):
 		return render(req, 'login.html')
 
 
+def save_vehicle(req):
+
+	user_access_level  = req.session.get("access_level")
+
+	if 'user_id' in req.session  and ('access_level' in req.session):		
+
+		if user_access_level == "Super Administrator":		 
+
+			if req.method == "GET":
+				 			
+				return HttpResponseRedirect('/mla/get-tin-info/')
+
+			elif req.method == "POST" and req.POST:				 
+				return add_new_vehicle(req)				
+			else:
+				 
+				return HttpResponseRedirect('/mla/get-tin-info/')		 
+
+		else:
+			# user has no rigth to do this operation 
+			messages.info(req, "You dont have the right to perform this operation")			 
+			# return render(req, 'login.html')
+		
+	else:
+		messages.info(req, "sign in")		 
+		return render(req, 'login.html')
 
 def all_number_plates(req):
 

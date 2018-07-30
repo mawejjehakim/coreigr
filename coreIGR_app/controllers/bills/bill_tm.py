@@ -2,6 +2,9 @@ from random import randint
 from dateutil.relativedelta import relativedelta
 from datetime import date
 
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+
 from coreIGR_app.models import Charge, TransactionAssessment, AssignedTin, Office, User
 #  pip install python-dateutil install 
 range_start = 10**(8-1)
@@ -18,18 +21,21 @@ expirationdate_6months = today + relativedelta(month=6)
 		
 # GENERATE BILL
 
-def bill_tm(tin, vehicle_type, engine_size, cost_price, chassis, staff, office ):
+def bill_tm(req, existing_tin, vehicle_type, engine_size, cost_price, chassis, staff, office ):
 	existing_office = Office.objects.get(id = office.id)
 	existing_staff = User.objects.get(id = staff.id)
+
+
 	 
 
 			
 	# GENERATE BILL
 
+	try:
 	# Tricycle
-	if (engine_size == "Tricycle"):
+		if (engine_size == "Tricycle"):
 
-		try:
+		 
 			
 		 
 			#Get particulars [Registration Fee]
@@ -94,27 +100,17 @@ def bill_tm(tin, vehicle_type, engine_size, cost_price, chassis, staff, office )
 			
 			
 			TransactionAssessment.objects.create(transaction_code = tcode, tin = existing_tin, expiration_date = expirationdate_1year, chassis_number  =  chassis, particulars = particulars, amount = amount,  transaction_type = "New Vehicle Registration", payment_status = "Not Paid", transaction_staff = existing_staff, transaction_office = existing_office)
-			return tcode
+			 
+		# Motocycle 
+		elif engine_size == "Motocycle":
 
-		except Charge.DoesNotExist:
-			messages.info(req, " This type Of charge does Not exist ")
-			return HttpResponseRedirect('/tin/add-vehicle/')
-
-		except Exception as e:
-			messages.info(req, " UnKnown exception ")
-			return HttpResponseRedirect('/tin/add-vehicle/')			
-			
-
-	# Motocycle 
-	elif engine_size == "Motocycle":
-
-		try:		
+				
 			
 			#Get particulars [Registration Fee]
 			charge_registration_fee = Charge.objects.get(options='New', vehicle_type='Commercial Tricycle/Motorcycle', particulars='Registration Fee' )
 				
 			particulars = "Registration Fee";
-			amount = charge_registration_fee.amount or
+			amount = charge_registration_fee.amount or 0
 			
 			
 			TransactionAssessment.objects.create(transaction_code = tcode, tin = existing_tin, chassis_number  =  chassis, particulars = particulars, amount = amount,  transaction_type = "New Vehicle Registration", payment_status = "Not Paid", transaction_staff = existing_staff, transaction_office = existing_office)
@@ -176,31 +172,32 @@ def bill_tm(tin, vehicle_type, engine_size, cost_price, chassis, staff, office )
 			
 
 
-#Get particulars [SMS Alert]
-			charge_sms_alert = Charge.objects.get(options='New', vehicle_type='Commercial Tricycle/Motorcycle', particulars='SMS Alert' )
-				
-			particulars = "SMS Alert";
-			amount = charge_sms_alert.amount or 0
+	#Get particulars [SMS Alert]
+		charge_sms_alert = Charge.objects.get(options='New', vehicle_type='Commercial Tricycle/Motorcycle', particulars='SMS Alert' )
 			
+		particulars = "SMS Alert";
+		amount = charge_sms_alert.amount or 0
+		
+		
+		TransactionAssessment.objects.create(transaction_code = tcode, tin = existing_tin, chassis_number  =  chassis, particulars = particulars, amount = amount,  transaction_type = "New Vehicle Registration", payment_status = "Not Paid", transaction_staff = existing_staff, transaction_office = existing_office)
+					
+		
+		
+		#Get particulars [Stamp Duty]
+		charge_stamp_duty = Charge.objects.get(options='New', vehicle_type='Commercial Tricycle/Motorcycle', particulars='Stamp Duty' )
 			
-			TransactionAssessment.objects.create(transaction_code = tcode, tin = existing_tin, chassis_number  =  chassis, particulars = particulars, amount = amount,  transaction_type = "New Vehicle Registration", payment_status = "Not Paid", transaction_staff = existing_staff, transaction_office = existing_office)
-						
-			
-			
-			#Get particulars [Stamp Duty]
-			charge_stamp_duty = Charge.objects.get(options='New', vehicle_type='Commercial Tricycle/Motorcycle', particulars='Stamp Duty' )
-				
-			particulars = "Stamp Duty";
-			amount = charge_stamp_duty.amount or 0
-			
-			
-			TransactionAssessment.objects.create(transaction_code = tcode, tin = existing_tin, chassis_number  =  chassis, particulars = particulars, amount = amount,  transaction_type = "New Vehicle Registration", payment_status = "Not Paid", transaction_staff = existing_staff, transaction_office = existing_office)
-			return tcode
+		particulars = "Stamp Duty";
+		amount = charge_stamp_duty.amount or 0
+		
+		
+		TransactionAssessment.objects.create(transaction_code = tcode, tin = existing_tin, chassis_number  =  chassis, particulars = particulars, amount = amount,  transaction_type = "New Vehicle Registration", payment_status = "Not Paid", transaction_staff = existing_staff, transaction_office = existing_office)
 
-		except Charge.DoesNotExist:
-			messages.info(req, " This type Of charge does Not exist ")
-			return HttpResponseRedirect('/tin/add-vehicle/')
+		req.session["correct_charge"] = "yes"
+		return tcode
 
-		except Exception as e:
-			messages.info(req, " UnKnown exception ")
-			return HttpResponseRedirect('/tin/add-vehicle/')		
+	except Charge.DoesNotExist as e:
+		messages.success(req, "Vehicle Record Created", extra_tags= "charge_unavailable")
+		# return HttpResponseRedirect('/mla/get-tin-info/')
+	except Exception as e:
+		raise e
+		print(e)	

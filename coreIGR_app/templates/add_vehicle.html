@@ -6,6 +6,12 @@
   <title>CoreIGR | Add Vehicle</title>
   {% load static %}
  {% include 'partials/css_head_links.html' %}
+  <style>
+   .no-field-style{
+    border: none;
+    background-color: transparent;
+   }
+ </style>
 
 
   
@@ -69,9 +75,11 @@
 
           
           <div class="row">
-            <div class="col">
+          <div class="col">
 
-            <div class="card" >
+            {% if register_for == "individual" %}
+
+            <div class="card" style="">
               <img src="{% static 'images/20180719_124806.jpg' %}" class="  card-img-top" alt="Individual Image">
               <div class="card-body">
                 <h5 class="card-title">Individual Details</h5>
@@ -79,96 +87,168 @@
               </div>
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">
-                   <div class="row border-bottom pt-3 "> 
+                  <div class="row  "> 
 
-                        <div class="col-sm-4">
-                          TIN
-                        </div>
-                        <div class="col">
-                           
-                            {{tin.tin}}
-                          
-                        </div>
-                         
-                    </div>
-                </li>
-                <li class="list-group-item">
-                   <div class="row border-bottom pt-3 "> 
-
-                      <div class="col-sm-4">
-                        Bussiness Name
+                      <div class="col-sm-5">
+                        TIN
                       </div>
-                      <div class="col">
-                        {{bussiness_name}}
+                      <div class="col lead text-left text-capitalize">
+                         
+                          {{current_owner_tin}}
+                        
                       </div>
                        
                     </div>
                 </li>
-
                 <li class="list-group-item">
-                 <div class="row border-bottom pt-3 "> 
+                  <div class="row  "> 
 
-                    <div class="col-sm-4">
-                      Bussiness Status
+                    <div class="col-sm-5">
+                      Name
                     </div>
-                    <div class="col">
-                     {{ bussiness_status }}
+                    <div class="col lead text-left text-capitalize">
+                      {{name}}
                     </div>
                      
                   </div>
+                </li>
 
+                <li class="list-group-item">
+                   <div class="row  "> 
+
+                    <div class="col-sm-5">
+                      Gender
+                    </div>
+                    <div class="col lead text-left text-capitalize">
+                      {{ gender }}
+                    </div>
+                     
+                  </div>
                 </li>
                <li class="list-group-item">
-                   <div class="row border-bottom pt-3 "> 
+                <div class="row  "> 
 
-                      <div class="col-sm-4">
-                        Business Class
-                      </div>
-                      <div class="col">
-                       {{ bussiness_class }}
-                      </div>
-                       
+                    <div class="col-sm-5">
+                      Address
                     </div>
+                    <div class="col lead text-left text-capitalize ">
+                     {{ address }} 
+                    </div>
+                     
+                  </div>
                 </li>
                <li class="list-group-item">
                   
-                 <div class="row border-bottom pt-3 "> 
+                 <div class="row"> 
 
-                    <div class="col-sm-4">
+                    <div class="col-sm-5">
                       Occupation
                     </div>
-                    <div class="col">
-                     {{ registration_number }}
+                    <div class="col lead text-left text-capitalize  ">
+                     {{ occupation }}
                     </div>
                      
-                  </div>
-                </li>
-
-                <li class="list-group-item">
-                  
-                  </div>
-
-                     <div class="row border-bottom pt-3 "> 
-
-                        <div class="col-sm-4">
-                          Business Owner
-                        </div>
-                        <div class="col">
-                         {{ bussiness_owner }}
-                        </div>
-                         
-                      </div>
-         
                   </div>
                 </li>
               </ul>
-              
-            </div>
 
-             
-
+            {% else %}
+              <div class="card" style="">
               
- 
+              <div class="card-body">
+                <h5 class="card-title">Comapany Details</h5>
+              
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <div class="row  "> 
+
+                      <div class="col-sm-5">
+                        TIN
+                      </div>
+                      <div class="col lead text-left text-capitalize">
+                         
+                          {{current_owner_tin}}
+                        
+                      </div>
+                       
+                    </div>
+
+                   
+
+                </li>
+                <li class="list-group-item">
+                  <div class="row  "> 
+
+                    <div class="col-sm-5">
+                     Local Government
+                    </div>
+                    <div class="col lead text-left text-capitalize">
+                      {{local_government}}
+                    </div>
+                     
+                  </div>
+                </li>
+
+                <li class="list-group-item">
+                   <div class="row  "> 
+
+                    <div class="col-sm-5">
+                      Bussiness Status
+                    </div>
+                    <div class="col lead text-left text-capitalize">
+                      {{ bussiness_status }}
+                    </div>
+                     
+                  </div>
+                </li>
+               <li class="list-group-item">
+                <div class="row  "> 
+
+                    <div class="col-sm-5">
+                      Rc Number
+                    </div>
+                    <div class="col lead text-left text-capitalize ">
+                     {{ registration_number }} 
+                    </div>
+                     
+                  </div>
+                </li>
+               <li class="list-group-item">
+                  
+                 <div class="row"> 
+
+                    <div class="col-sm-5">
+                      Bussiness Name
+                    </div>
+                    <div class="col lead text-left text-capitalize  ">
+                     {{ bussiness_name }}
+                    </div>
+                     
+                  </div>
+                </li>
+
+               <li class="list-group-item">
+                  
+                 <div class="row"> 
+
+                    <div class="col-sm-5">
+                      Bussiness Name
+                    </div>
+                    <div class="col lead text-left text-capitalize  ">
+                     {{ bussiness_owner }}
+                    </div>
+                     
+                  </div>
+                </li>
+
+
+              </ul>
+
+            {% endif %}
+              
+            </div>        
+           
           </div>
 
 
@@ -179,9 +259,9 @@
 
               <div class="card-header">Vehicle Info</div>
                <div class="card-body">
-                 
+
                
-              <input type="hidden" name="current_owner_tin" value="{{ current_owner_tin.tin }}"  >
+              <input type="hidden" name="current_owner_tin" value="{{ current_owner_tin }}"  >
               
               <div class="form-group row">
                 <label  class="col col-form-label">Chassis Number</label>
@@ -190,7 +270,6 @@
                 </div>
               </div>
 
- 
 
 
                <div class="form-group row">
@@ -203,14 +282,14 @@
  
                  
                <div class="form-group row">
-                <label  class="col col-form-label">Number Plate</label>
+                <label for="number_plate" class="col col-form-label">Number Plate</label>
                 <div class="col-sm-9">
                   <input type="text" class="form-control"  name="number_plate">
                 </div>
               </div>
 
                <div class="form-group row">
-                <label for="bussiness_address" class="col col-form-label">Vehicle category</label>
+                <label   class="col col-form-label">Vehicle category</label>
                 <div class="col-sm-9">
                   <input type="text" class="form-control" readonly value="{{ vehicle_category }}"  name="vehicle_category">
                 </div>
@@ -222,23 +301,24 @@
                   <input type="text" class="form-control"  name="gross_weight">
                 </div>
               </div>
+ 
 
                <div class="form-group row">
-                <label  class="col col-form-label">Net Weight (kg)</label>
+                <label for="net_weight" class="col col-form-label">Net Weight (kg)</label>
                 <div class="col-sm-9">
                   <input type="text" class="form-control"  name="net_weight">
                 </div>
               </div>
 
                <div class="form-group row">
-                <label  class="col col-form-label">No. of Persons</label>
+                <label class="col col-form-label">No. of Persons</label>
                 <div class="col-sm-9">
                   <input type="text" class="form-control"  name="no_of_passengers">
                 </div>
               </div>
 
                <div class="form-group row">
-                <label  class="col col-form-label">Vehicle Color</label>
+                <label class="col col-form-label">Vehicle Color</label>
                 <div class="col-sm-9">
                   <input type="text" class="form-control"  name="colour">
                 </div>
@@ -248,7 +328,7 @@
               <div class="form-group row">
 
 
-                <label for="engine_size" class="col col-form-label">Engine Size</label>
+                <label  class="col col-form-label">Engine Size</label>
                 <div class="col-sm-9">
 
                   <select name="engine_size"  class="form-control">
@@ -355,10 +435,12 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-        <form action="/mla/save-individual-vehicle/" method="POST">
+        <form action="/mla/save-vehicle/" method="POST">
           {% csrf_token %}
           <div class="modal-body">
             <div class="card">
+
+              <input type="hidden" name="current_owner_tin" value="{{ current_owner_tin }}"  >
 
               <ul class="list-group list-group-flush">
                 <li class="list-group-item">
@@ -390,7 +472,7 @@
                       Plate Number
                     </div>
                     <div class="col-sm">
-                      <input type="text" name="number_plate" value="{{ number_plate }}"  class="no-field-style" >
+                      <input type="text" name="number_plate" value="{{ number_plate.number_plate.number_plate }}"  class="no-field-style" >
                     </div>
                      
                   </div>
@@ -412,7 +494,7 @@
                     Gross Weight
                   </div>
                   <div class="col-sm">
-                    <input type="text" name="address" value="{{ gross_weight }}"  class="no-field-style" >
+                    <input type="text" name="gross_weight" value="{{ gross_weight }}"  class="no-field-style" >
                   </div>
                    
                 </div>
@@ -473,39 +555,37 @@
                      
                   </div>
                 </li>
-                <li class="list-group-item">
-                   <div class="row ">
-                    <div class="col-sm-5">
-                      Work Place
-                    </div>
-                    <div class="col-sm">
-                      <input type="text" name="cost_price" value="{{ cost_price }}"  class="no-field-style" >
-                    </div>
-                     
-                  </div>
-                </li>
+                
                
               </ul>
 
+                <div class="form-group ">
+                <div class="form-check ">
+                  <input type="checkbox" checked name="add_with_particulars">
+                  <label class="form-check-label" >
+                    Add Vehicle with Particulars
+                  </label>
+                </div>
+              </div>
+
   
-            </div>
+           
           </div>
 
           <div class="modal-footer">
             <button type="button" class="btn btn-primary" onclick="continueEditingPage()">Back</button>
             <input type="submit"  class="btn btn-success" value="Save">
           </div>
-        </form>
-
+        
         </div>
-
+</form></div>
       </div>
     </div>
 
   <!-- new record created modal -->
  
 
-
+ 
     <div class="modal fade" id="recordCreated">
     <div class="modal-dialog modal-sm">
       <div class="modal-content">
@@ -529,6 +609,206 @@
       </div>
     </div>
   </div>
+
+  <div class="modal fade" id="wrongPlateAssignedNumber">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title">Plate Not Assigned</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          <p> This Number Plate has not been assigned or is invalid</p>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary"  onclick="continueEditingPage()">OK</button> 
+        </div>
+        
+      </div>
+    </div>
+  </div>
+    <div class="modal fade" id="DuplicateChassisRecordModal">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h5 class="modal-title">Plate Not Assigned</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          <p> A vehicle with this chassis is already in the system</p>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary"  onclick="continueEditingPage()">OK</button> 
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+   <div class="modal fade " data-backdrop="static" tabindex="-1" id="vehicleAssesmentModal" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+         
+             <div class="card"> 
+              <div class="card-body">
+                <h5 class="card-title">Transaction Review </h5>
+              
+            
+              
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                  <div class="row  "> 
+
+                      <div class="col-sm-5">
+                        TIN
+                      </div>
+                      <div class="col lead text-left text-capitalize">
+                         
+                          {{current_owner_tin}}
+                        
+                      </div>
+                       
+                    </div>
+                </li>              
+              
+ 
+
+               <li class="list-group-item">                  
+                 <div class="row"> 
+
+                    <div class="col-sm-5">
+                       Chassis Number
+                    </div>
+                    <div class="col lead text-left text-capitalize  ">
+                     {{ chassis_number }}
+                    </div>
+                     
+                  </div>
+                </li>
+
+                <li class="list-group-item">                  
+                 <div class="row"> 
+
+                    <div class="col-sm-5">
+                       Vehicle Category
+                    </div>
+                    <div class="col lead text-left text-capitalize  ">
+                     {{ vehicle_category }}
+                    </div>
+                     
+                  </div>
+                </li>
+
+                <li class="list-group-item">                  
+                 <div class="row"> 
+
+                    <div class="col-sm-5">
+                       Vehicle Model
+                    </div>
+                    <div class="col lead text-left text-capitalize  ">
+                     {{ vehicle_model }}
+                    </div>
+                     
+                  </div>
+                </li>
+                <li class="list-group-item">                  
+                 <div class="row"> 
+
+                    <div class="col-sm-5">
+                       Transaction Code
+                    </div>
+                    <div class="col lead text-left text-capitalize  ">
+                     {{ transaction_code }}
+                    </div>
+                     
+                  </div>
+                </li>
+
+
+              </ul>
+            </div>
+
+ 
+            </div> 
+
+
+               <div class="card mb-3">
+        <div class="card-header">
+          <i class="fa fa-table"></i> Tranasction Assessment
+        </div>
+        <div class="card-body">
+
+          <div class="table-responsive">
+             
+             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+             {% if transaction_assessments %}
+
+                <tr>
+                <tr>
+                  <th>Particular</th> 
+                  <th>Amount</th> 
+
+                </tr>
+                 
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                <tr>
+                  <th>Particular</th> 
+                  <th>Amount</th> 
+
+                </tr>
+                  
+                </tr>
+              </tfoot> 
+
+              <tbody>
+                {% for transaction_assessment in transaction_assessments %}
+                <tr> 
+                  <td>{{ transaction_assessment.particulars }}</td>
+                  <td>{{ transaction_assessment.amount }}</td>
+                   
+                  
+                </tr>
+                {% endfor %}
+              </tbody>
+              {% else %}
+                 <div class="alert alert-warning float-left"  role="alert">
+                     No Assesments generated Yet
+                </div>
+              {% endif %}
+              
+            </table>
+
+ 
+          </div>
+        </div>
+        
+      </div>
+            <div class="modal-footer">
+                
+                <a href="/mla/get-tin-info/" class="btn btn-primary"  >Okay</a>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+
 
     <!-- Logout Modal-->
 
@@ -562,6 +842,34 @@
                  $('#individualVehicleDataPreviewModal').modal('show');
             
         </script>
+
+        {%elif  "p_not_assigned" in message.extra_tags %}
+         
+          <script>                   
+            
+                 $('#wrongPlateAssignedNumber').modal('show');
+                 
+            
+        </script>
+
+        {%elif  "assessment_prev_record_created" in message.extra_tags %}
+         
+          <script> 
+                        
+            
+                 $('#vehicleAssesmentModal').modal('show');
+                 
+            
+        </script>
+
+        {%elif  "chassis_duplicate" in message.extra_tags %}
+         
+          <script>                   
+            
+                 $('#DuplicateChassisRecordModal').modal('show');
+                 
+            
+        </script>
         
 
         {%elif  "record_created" in message.extra_tags %}
@@ -572,6 +880,7 @@
                  
             
         </script>
+
         {% endif %}
 
           
@@ -580,6 +889,13 @@
     {% endif %}
   </div>
 </body>
+<script>
+  function continueEditingPage () {
+    // body... 
+   
+    window.history.back();
+  }
+</script>
 
 
 </html>

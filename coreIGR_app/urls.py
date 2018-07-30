@@ -54,6 +54,7 @@ urlpatterns = [
       path('mla/get-tin-info/', views.get_tin_info, name = "get_tin_info" ),
       path('mla/vehicles/', views.all_vehicles, name = "all_vehicles" ),
       path('mla/vehicle-preview/', views.v_data_preview_before_saving, name = "v_data_preview_before_saving" ),
+      path('mla/save-vehicle/',views.save_vehicle, name = "save_vehicle"),
 
       path('mla/change-vehicle-ownership/', views.change_vehicle_ownership, name = "change_vehicle_ownership" ),
       path('mla/mark-stolen-vehicle/', views.mark_stolen_vehicle, name = "mark_stolen_vehicle" ),

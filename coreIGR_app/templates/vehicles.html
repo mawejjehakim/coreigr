@@ -74,9 +74,9 @@
              {% if vehicles %}
 
                 <tr>
-                  <th>ID</th>
+                 
                   <th>Owners TIN</th>
-                  <th>Old Owner</th>
+                  
                   <th>Chassis Number</th>
                   <th>Model</th>
                   <th>Plate number </th>
@@ -89,14 +89,15 @@
                   <th>Price</th>
                   <th>Engine size</th>
                   <th>Options</th>
+                   <th>Old Owner</th>
                  
                 </tr>
               </thead>
               <tfoot>
                 <tr>
-                  <th>ID</th>
+                  
                   <th>Owners TIN</th>
-                  <th>Old Owner</th>
+                 
                   <th>Chassis Number</th>
                   <th>Model</th>
                   <th>Plate number </th>
@@ -108,19 +109,19 @@
                   <th>Weight</th>
                   <th>Price</th>
                   <th>Engine size</th>
-
+                   <th>Old Owner</th>
                   <th>Options</th>
                   
-                </tr>14
+                
               </tfoot>
              
 
               <tbody>
                 {% for vehicle in vehicles %}
                 <tr> 
-                  <td>{{ vehicle.id }}</td>
-                  <td>{{ vehicle.current_owner_tin }}</td>
-                  <td>{{ vehicle.old_owners_tin }}</td>
+                   
+                  <td>{{ vehicle.current_owner_tin.tin }}</td>
+                  
                   <td>{{ vehicle.chassis_number }}</td>
                   <td>{{ vehicle.vehicle_model }}</td>
                   <td>{{ vehicle.number_plate }}</td>
@@ -135,11 +136,11 @@
 
                   
                   <td>{{ vehicle.engine_size }}</td>
-                  <td>{{ vehicle.option }}</td>
- 
+                  <td>{{ vehicle.old_owners_tin }}</td>
+                  
                  
                   <td>
-                     <a href="/set-up/edit-vehicle/{{vehicle.id}}/" class="btn btn-primary">Edit</a> &nbsp;&nbsp;
+                     <!-- <a href="/set-up/edit-vehicle/{{vehicle.id}}/" class="btn btn-primary">Edit</a> &nbsp;&nbsp; -->
                    
 
                     {% if vehicle.theft_status %}

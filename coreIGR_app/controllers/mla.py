@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from coreIGR_app.forms import TinNumberForm, PlateNumberForm, VehicleForm
-from coreIGR_app.models import AssignedTin, Company, Individual, AssignedNumberPlate, Office, User
+from coreIGR_app.models import AssignedTin, Company, Individual, AssignedNumberPlate, Office, User, Vehicle, TransactionAssessment
 from django.http import HttpResponseRedirect
-
+from coreIGR_app.controllers.generate_assessment_bill import generate_assessment_bill
+ 
+ 
 from random import randint
 from dateutil.relativedelta import relativedelta
 from datetime import date
@@ -34,8 +36,7 @@ def get_tin_information(req):
 				if existing_tin_number.tin_for == "Company":
 					try:
 						company = Company.objects.get(tin = existing_tin_number.id)
-						print(vehicle_category)
-
+						 
 						if vehicle_category ==  "Private Vehicle Saloon" or vehicle_category == "Commercial Vehicle Saloon" or vehicle_category == "Private Pickup/Bus" or vehicle_category == "Commercial Pickup/Bus" or vehicle_category == "Dealers Vehicle":
 							engine_size = True
 							no_of_tyres = False
@@ -54,7 +55,7 @@ def get_tin_information(req):
 							no_of_tyres = False
 							engine_size = False
 
-						tin = existing_tin_number.tin
+						tin = company.tin
 						local_government = company.local_government
 						bussiness_status = company.bussiness_status
 						bussiness_class = company.bussiness_class
@@ -62,7 +63,7 @@ def get_tin_information(req):
 						bussiness_name = company.bussiness_name
 						bussiness_owner = company.bussiness_owner
 
-						render(req, 'add_company_vehicle.html', {'tin':tin, 'local_government':local_government, 'bussiness_status':bussiness_status, 'registration_number':registration_number, 'bussiness_name':bussiness_name, 'bussiness_owner':bussiness_owner}) 
+						return render(req, 'add_vehicle.html', {'current_owner_tin':tin.tin,'vehicle_category':vehicle_category,   'local_government':local_government, 'bussiness_status':bussiness_status, 'registration_number':registration_number, 'bussiness_name':bussiness_name, 'bussiness_owner':bussiness_owner, "register_for":"company"}) 
 
 					except Company.DoesNotExist:
 						 
@@ -71,9 +72,7 @@ def get_tin_information(req):
 					
 				else:
 					try:
-						print(vehicle_category)
 						 
-
 						individual = Individual.objects.get(tin = existing_tin_number.id)
 
 						if vehicle_category ==  "Private Vehicle Saloon" or vehicle_category == "Commercial Vehicle Saloon" or vehicle_category == "Private Pickup/Bus" or vehicle_category == "Commercial Pickup/Bus" or vehicle_category == "Dealers Vehicle":
@@ -101,9 +100,8 @@ def get_tin_information(req):
 						address = individual.address
 						occupation = individual.occupation
 
-						 
-
-						return render(req, 'add_individual_vehicle.html', {'vehicle_category':vehicle_category, 'tin':tin, 'name':name, 'gender':gender, 'state':state, 'address':address, 'occupation':occupation,  "engine_size":engine_size, "no_of_tyres":no_of_tyres, "engine_category":engine_category}) 
+						  
+						return render(req, 'add_vehicle.html', {'vehicle_category':vehicle_category, 'current_owner_tin':tin.tin, 'name':name, 'gender':gender, 'state':state, 'address':address, 'occupation':occupation, "register_for":"individual"}) 
 
 					except Individual.DoesNotExist:
 						 
@@ -131,7 +129,7 @@ def v_data_preview(req):
 
 	if form.is_valid():
 
-		current_owner_tin = form.cleaned_data.get('current_owner_tin')
+		current_owner_tin = req.POST.get('current_owner_tin')
 
 		chassis_number = form.cleaned_data.get("chassis_number")
 		vehicle_model = form.cleaned_data.get("vehicle_model")
@@ -150,20 +148,19 @@ def v_data_preview(req):
 			staff_obj = User.objects.get(id = signed_in_user_id)
 			office_obj = Office.objects.get(id = staff_obj.office.id)
 
-			print(office_obj.office_name)
-
-			 
-			assigned_plate =  AssignedNumberPlate.objects.get(number_plate = number_plate, is_issued = False, office = office_obj.id)		
+						 
+			# assigned_plate =  AssignedNumberPlate.objects.get(number_plate = number_plate, is_issued = False, office = office_obj.id) in coment for prodcution
+			assigned_plate =  AssignedNumberPlate.objects.get(number_plate = number_plate, is_issued = True, office = office_obj.id)		
 
 			data_context = {'current_owner_tin':current_owner_tin, 'chassis_number':chassis_number, 'vehicle_model':vehicle_model, 'number_plate':assigned_plate, 'vehicle_category':vehicle_category, 'gross_weight':gross_weight, 'net_weight':net_weight, 'no_of_passengers':no_of_passengers, 'colour':colour, 'weight':weight, 'engine_size':engine_size, 'cost_price':cost_price }
 			messages.success(req, " Record Preview ",  extra_tags = 'v_data_preview data' )
-			return render(req, 'add_individual_vehicle.html', data_context)
+			return render(req, 'add_vehicle.html', data_context)
 	 	
 
 		except AssignedNumberPlate.DoesNotExist as e:
-			print("sdfgbfdfvb")				 
-			messages.info(req, "Number Plate is wrong")
-			return HttpResponseRedirect('/mla/add-vehicle/')
+						 
+			messages.info(req, "Number Plate is wrong", extra_tags = "p_not_assigned")
+			return render(req, 'add_vehicle.html')
 
 		except Office.DoesNotExist as e:			 
 			messages.info(req, "Number Plate is wrong")
@@ -176,25 +173,37 @@ def v_data_preview(req):
 		
 	else:
 		print(form.errors)
+
+		if form['number_plate'].errors: 
+			messages.info(req, "Number Already resgistered", extra_tags = "p_not_assigned")
+			return render(req, 'add_vehicle.html')
+
+		elif form['chassis_number'].errors: 
+			messages.info(req, "Number Already resgistered", extra_tags = "chassis_duplicate")
+			return render(req, 'add_vehicle.html')
+
+		# check if chasis is alredy registred and plate number
 		messages.info(req, "invalid form fields")
 		return HttpResponseRedirect('/mla/get-tin-info/')
 
 
-def save_vehicle(req):
+def add_new_vehicle(req):
 
 	signed_in_user_id = req.session.get("user_id")
 
-	current_owner_tin = form.cleaned_data.get('current_owner_tin')
+	current_owner_tin = req.POST.get('current_owner_tin')
 	chassis_number = req.POST.get("chassis_number")
 	vehicle_model = req.POST.get("vehicle_model")
 	number_plate = req.POST.get("number_plate")
 	vehicle_category = req.POST.get("vehicle_category")
 	gross_weight = req.POST.get("gross_weight")
 	net_weight = req.POST.get("net_weight")
+	weight = req.POST.get("weight")
 	no_of_passengers = req.POST.get("no_of_passengers")
 	colour = req.POST.get("colour")			 
 	engine_size = req.POST.get("engine_size")
 	cost_price = req.POST.get("cost_price", 0)
+
 	staff_obj = User.objects.get(id = signed_in_user_id)
 
 	add_with_particulars = req.POST.get("add_with_particulars", False)
@@ -203,22 +212,39 @@ def save_vehicle(req):
 
 	office_obj = Office.objects.get(office_name = staff_obj.office.office_name)
 
-	taken_number_plate =  assigned_plate.req.POST.get("assigned_plate")
+	taken_number_plate =  AssignedNumberPlate.objects.get(number_plate = number_plate)
+
+  
 	current_owner_tin = AssignedTin.objects.get(tin = current_owner_tin)
 
-	Vehicle.objects.create( current_owner_tin= current_owner_tin, chassis_number = chassis_number,  vehicle_model = vehicle_model,number_plate = number_plate, vehicle_category = vehicle_category, gross_weight =gross_weight , net_weight = net_weight, no_of_passengers = no_of_passengers, colour = colour, weight = weight, engine_size =engine_size, cost_price = cost_price, staff =staff, office = office)
+	# Vehicle.objects.create( current_owner_tin= current_owner_tin, chassis_number = chassis_number,  vehicle_model = vehicle_model,number_plate = number_plate, vehicle_category = vehicle_category, gross_weight =gross_weight , net_weight = net_weight, no_of_passengers = no_of_passengers, colour = colour, weight = weight, engine_size =engine_size, cost_price = cost_price, staff = staff_obj, office = office_obj)
 	
-	if no_particulars:
-		tcode = generate_assessment_bill(tin.tin, vehicle_category, engine_size, cost_price, chassis_number, staff, office)
+	if add_with_particulars:
+		tcode = generate_assessment_bill(req, current_owner_tin.tin, vehicle_category, engine_size, cost_price, chassis_number, staff_obj, office_obj)
+
+		if 'correct_charge' in req.session:
+			Vehicle.objects.create( current_owner_tin= current_owner_tin, chassis_number = chassis_number,  vehicle_model = vehicle_model,number_plate = number_plate, vehicle_category = vehicle_category, gross_weight =gross_weight , net_weight = net_weight, no_of_passengers = no_of_passengers, colour = colour, weight = weight, engine_size =engine_size, cost_price = cost_price, staff = staff_obj, office = office_obj)
+			transaction_assessments =  TransactionAssessment.objects.filter(transaction_code = tcode)
+			taken_number_plate.is_issued = True
+			messages.success(req, "Vehicle Record Created", extra_tags= "assessment_prev_record_created")
+			 
+			print(transaction_assessments)
+			print(tcode)
+
+			return render(req, 'add_vehicle.html', {'transaction_code':tcode, 'transaction_assessments':transaction_assessments, 'vehicle_category':vehicle_category, 'vehicle_model':vehicle_model,'current_owner_tin':current_owner_tin.tin, 'chassis_number':chassis_number,})
+			 
+		
+		else:			 
+			return HttpResponseRedirect('/mla/get-tin-info/')
+		
+ 
+	else:
+		Vehicle.objects.create( current_owner_tin= current_owner_tin, chassis_number = chassis_number,  vehicle_model = vehicle_model,number_plate = number_plate, vehicle_category = vehicle_category, gross_weight =gross_weight , net_weight = net_weight, no_of_passengers = no_of_passengers, colour = colour, weight = weight, engine_size =engine_size, cost_price = cost_price, staff = staff_obj, office = office_obj)
+		taken_number_plate.is_issued = True
+		messages.success(req, "Vehicle Record Created", extra_tags= "record_created")
+		return HttpResponseRedirect('/mla/get-tin-info/')	
 	
-	taken_number_plate.is_issued = True
-	taken_number_plate.save()
-
-	transaction_assessments =  TransactionAssessment.objects.filter(transaction_code = tcode)
-
-	messages.success(req, "Vehicle Record Created", extra_tags= "record_created")
-	return HttpResponseRedirect('/tin/add-vehicle/')
-
+ 
 
 def get_tin_information_ch_ownership(req):
 	form = ChassiNumberFieldForm(req.POST)

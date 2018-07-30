@@ -113,7 +113,7 @@
             </div>
 
          
-
+    
 
         <div class="modal fade" id="wrongTinModal">
           <div class="modal-dialog modal-sm">
@@ -138,6 +138,77 @@
             </div>
           </div>
         </div>
+
+
+        <div class="modal fade" id="vehicleCreatedModal">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+            
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h5 class="modal-title">Vechicle Created </h5> 
+              </div>
+              
+              <!-- Modal body -->
+              <div class="modal-body">
+                <p> Vehicle record has been created Successfully Continue Adding </p>
+              </div>
+              
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="vehicleCreatedWithTAModal">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+            
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h5 class="modal-title">Vechicle Created </h5> 
+              </div>
+              
+              <!-- Modal body -->
+              <div class="modal-body">
+                <p> Vehicle record has been created with Transsanction assesment</p>
+              </div>
+              
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="vehicleChargeUnavailableModal">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+            
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h5 class="modal-title">Charge Un Availbale </h5> 
+              </div>
+              
+              <!-- Modal body -->
+              <div class="modal-body">
+                <p> Sorry but this type of Vehicle charge has not been Added </p>
+              </div>
+              
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
 
 
 
@@ -176,7 +247,32 @@
                      $('#wrongTinModal').modal('show');
                 
             </script>
+
+           {% elif  "record_created" in message.extra_tags %}
+             
+              <script>                   
+                
+                     $('#vehicleCreatedModal').modal('show');
+                
+            </script>
+
+            {% elif  "record_created_with_TA" in message.extra_tags %}
+             
+              <script>                   
+                
+                     $('#vehicleCreatedWithTAModal').modal('show');
+                
+            </script>
+
+            {% elif  "charge_unavailable" in message.extra_tags %}
+             
+              <script>                   
+                
+                     $('#vehicleChargeUnavailableModal').modal('show');
+                
+            </script>
          
+
 
              
            

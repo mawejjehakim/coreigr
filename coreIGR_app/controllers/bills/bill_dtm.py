@@ -1,6 +1,8 @@
 from random import randint
 from dateutil.relativedelta import relativedelta
 from datetime import date
+from django.contrib import messages
+from django.http import HttpResponseRedirect
 
 from coreIGR_app.models import Charge, TransactionAssessment, AssignedTin, Office, User
 #  pip install python-dateutil install 
@@ -16,7 +18,7 @@ expirationdate_1year = today + relativedelta(years=1)
 		
 # GENERATE BILL
 
-def bill_dtm(tin, vehicle_type, engine_size, cost_price, chassis, staff, office ):
+def bill_dtm(req, existing_tin, vehicle_type, engine_size, cost_price, chassis, staff, office ):
 	existing_office = Office.objects.get(id = office.id)
 	existing_staff = User.objects.get(id = staff.id)
 	 
@@ -52,14 +54,15 @@ def bill_dtm(tin, vehicle_type, engine_size, cost_price, chassis, staff, office 
 
 		TransactionAssessment.objects.create(transaction_code = tcode, tin = existing_tin, chassis_number  =  chassis, particulars = particulars, amount = amount,  transaction_type = "New Vehicle Registration", payment_status = "Not Paid", transaction_staff = existing_staff, transaction_office = existing_office)
 
+		req.session["correct_charge"] = "yes"
 		return tcode
-	except Charge.DoesNotExist:
-		messages.info(req, "This Type of Charge does not exist ")
-		return HttpResponseRedirect('/tin/add-vehicle/')
 
+	except Charge.DoesNotExist as e:
+		messages.success(req, "Vehicle Record Created", extra_tags= "charge_unavailable")
+		# return HttpResponseRedirect('/mla/get-tin-info/')
 	except Exception as e:
-		messages.info(req, " UnKnown exception ")
-		return HttpResponseRedirect('/tin/add-vehicle/')
+		raise e
+		print(e)
 	
 	 
 
